@@ -2,7 +2,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 SOURCES := $(wildcard src/*.lisp) $(wildcard *.asd) $(wildcard t/*.lisp)
 APP_NAME=dbfs
 
-.PHONY: dist manual
+.PHONY: clean docker-create docker-start docker-stop
 
 $(APP_NAME): quicklisp-manifest.txt $(SOURCES)
 	@buildapp  --manifest-file quicklisp-manifest.txt \
@@ -18,16 +18,22 @@ quicklisp-manifest.txt:
 		--eval '(ql:quickload :$(APP_NAME))' \
 		--eval '(ql:write-asdf-manifest-file "quicklisp-manifest.txt")'
 
-manual:
-	@mkdir -p dist/
-	@pandoc -s -t man docs/$(APP_NAME).md > dist/$(APP_NAME).1
-	@gzip dist/$(APP_NAME).1
+clean:
+	@rm -f $(APP_NAME) quicklisp-manifest.txt
 
-dist:
-	@make $(APP_NAME)
-	@make manual
-	@mkdir -p dist/
-	@cp $(APP_NAME) dist/
-	@./$(APP_NAME) package
-	@mv $(APP_NAME)_*_amd64.deb dist/
-	@rm -f dist/$(APP_NAME) dist/$(APP_NAME).1.gz
+docker-create:
+	docker run -d \
+		--volume=/var/lib/mysql \
+		--env="MYSQL_ROOT_PASSWORD=root" \
+		--env="MYSQL_USER=dbfs" \
+		--env="MYSQL_PASSWORD=pass" \
+		--env="MYSQL_DATABASE=dbfs" \
+		--publish="3306:3306" \
+		--name="dbfs-mysql" \
+		mysql
+
+docker-start:
+	docker start dbfs-mysql
+
+docker-stop:
+	docker stop dbfs-mysql
