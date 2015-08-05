@@ -51,11 +51,9 @@
   (log:debug "file-size: ~A" split-path)
   (length (read-file split-path :root)))
 
-(defvar *db-type* nil)
-
 (defun help ()
-  (format t "Usage: dbfs [database type] [folder] [...]~%")
-  (format t "~%Example: dbfs mysql /mysql/ localhost username password~%")
+  (format t "Usage: dbfs <folder> <database type> [other arguments]~%")
+  (format t "~%Example: dbfs /mysql/ mysql localhost dbname username password~%")
   (format t "~%Supported databases: mysql~%")
   0)
 
@@ -63,8 +61,10 @@
   (log:debug "fuse-run")
   (when (member "--help" args :test #'string=)
     (return-from main (help)))
-  (setf *db-type* (second args))
-  (cl-fuse:fuse-run `(,(cat "dbfs-" (second args)) ,(third args) "-oallow_other")
+  (initialize-db-connection (rest (rest args)))
+  (cl-fuse:fuse-run (list (cat "dbfs-" (string-downcase (third args))) ; fs name
+                          (second args) ; folder
+                          "-oallow_other")
                     :directory-content 'directory-content
                     :directoryp 'directoryp
                     :file-read 'file-read

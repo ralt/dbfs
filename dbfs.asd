@@ -19,7 +19,11 @@
   :depends-on (:cl-fuse-meta-fs :log4cl)
   :components ((:module "src"
                 :components
-                ((:file "dbfs"))))
+                ((:file "dir-content")
+                 (:file "is-directory")
+                 (:file "read-file")
+                 (:file "db")
+                 (:file "dbfs"))))
   :description ""
   :long-description
   #.(with-open-file (stream (merge-pathnames
