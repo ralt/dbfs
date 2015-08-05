@@ -16,13 +16,13 @@
   :version "0.1"
   :author "Florian Margaine"
   :license "MIT License"
-  :depends-on (:cl-fuse-meta-fs :log4cl)
+  :depends-on (:cl-fuse-meta-fs :log4cl :clsql)
   :components ((:module "src"
                 :components
-                ((:file "dir-content")
+                ((:file "db")
+                 (:file "dir-content")
                  (:file "is-directory")
                  (:file "read-file")
-                 (:file "db")
                  (:file "dbfs"))))
   :description ""
   :long-description

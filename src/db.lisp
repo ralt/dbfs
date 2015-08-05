@@ -1,5 +1,11 @@
 (in-package :dbfs)
 
+(defvar *connection-spec* nil)
+
+(defmacro with-db (arg &body body)
+  `(clsql:with-database (,@arg *connection-spec* :pool t)
+     ,@body))
+
 ;;; Supported db types and their init functions.
 (defvar *supported-dbs* (make-hash-table :test #'equal))
 
@@ -15,4 +21,5 @@
   (apply (gethash (string-upcase (first args)) *supported-dbs*) (rest args)))
 
 (define-db-connection mysql (host dbname username password)
-  (format nil "~A ~A ~A ~A" host dbname username password))
+  (setf clsql:*default-database-type* :mysql)
+  (setf *connection-spec* (format nil "mysql://~A:~A@~A/~A" username password host dbname)))
