@@ -1,5 +1,7 @@
 # dbfs
 
+Database as a filesystem.
+
 ## Spec
 
 Will surely change as I iterate on the thing.
