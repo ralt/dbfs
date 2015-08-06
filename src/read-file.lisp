@@ -4,4 +4,4 @@
   (:documentation "Reads a single file."))
 
 (defmethod read-file (path (type (eql :root)) &key)
-  )
+  "")

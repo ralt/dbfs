@@ -24,16 +24,14 @@ clean:
 docker-create:
 	docker run -d \
 		--volume=/var/lib/mysql \
-		--env="MYSQL_ROOT_PASSWORD=root" \
-		--env="MYSQL_USER=dbfs" \
-		--env="MYSQL_PASSWORD=pass" \
-		--env="MYSQL_DATABASE=dbfs" \
-		--publish="3306:3306" \
-		--name="dbfs-mysql" \
-		mysql
+		--env="POSTGRES_USER=dbfs" \
+		--env="POSTGRES_PASSWORD=pass" \
+		--publish="5432:5432" \
+		--name="dbfs-postgresql" \
+		postgres
 
 docker-start:
-	docker start dbfs-mysql
+	docker start dbfs-postgresql
 
 docker-stop:
-	docker stop dbfs-mysql
+	docker stop dbfs-postgresql
