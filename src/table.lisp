@@ -45,6 +45,6 @@ FROM   ~A
         (postmodern:query (format nil "
 SELECT *
 FROM ~A
-WHERE ~A = $1" table key-field) key :plist))
+WHERE ~A = $1" table key-field) key :alist))
     (declare (ignore _))
     rows))

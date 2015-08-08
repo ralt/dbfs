@@ -16,6 +16,11 @@
   (format nil "~A~%" (table-primary-key table)))
 
 (defmethod read-file (path (type (eql :data)) &key table)
-  (let ((data (table-row table (table-primary-key table) (first path))))
-    (when data
-      (format nil "~A~%" data))))
+  (let ((row (table-row table (table-primary-key table) (first path))))
+    (when row
+      (format nil "~{~A~%~}"
+              (mapcar #'(lambda (field)
+                          (format nil "~A: ~A"
+                                  (string-downcase (car field))
+                                  (cdr field)))
+                      row)))))
