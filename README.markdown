@@ -2,6 +2,28 @@
 
 Database as a filesystem.
 
+## How to install
+
+You'll need the following dependencies:
+
+- sbcl
+- quicklisp
+- libfuse
+- make
+
+And simply run `make` to build the `dbfs` binary.
+
+Then, you can run:
+
+    $ mkdir db/
+    $ ./dbfs db/ postgresql host dbname username password
+
+If you're running postgresql locally, the host should be 127.0.0.1 and
+not localhost.
+
+If you have docker, you can get a local postgresql instance by running
+`make docker-create`, then `make docker-(start|stop)`.
+
 ## Spec
 
 Will surely change as I iterate on the thing.
