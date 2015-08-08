@@ -9,7 +9,13 @@
 
 (defmethod read-file (path (type (eql :table)) &key table)
   (let ((file (first path)))
-    (cond ((string= file "identifier") (read-file nil :table-id :table table)))))
+    (cond ((string= file "identifier") (read-file nil :identifier :table table))
+          ((string= file "data") (read-file (rest path) :data :table table)))))
 
-(defmethod read-file (path (type (eql :table-id)) &key table)
+(defmethod read-file (path (type (eql :identifier)) &key table)
   (format nil "~A~%" (table-primary-key table)))
+
+(defmethod read-file (path (type (eql :data)) &key table)
+  (let ((data (table-row table (table-primary-key table) (first path))))
+    (when data
+      (format nil "~A~%" data))))

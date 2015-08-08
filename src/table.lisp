@@ -38,3 +38,13 @@ FROM   ~A
 " key-field table) :lists))
     (declare (ignore _))
     (mapcar #'write-to-string (mapcar #'first keys))))
+
+(defn table-row (string -> string -> string -> list) (table key-field key)
+  (multiple-value-bind (rows _)
+      (with-db
+        (postmodern:query (format nil "
+SELECT *
+FROM ~A
+WHERE ~A = $1" table key-field) key :plist))
+    (declare (ignore _))
+    rows))
