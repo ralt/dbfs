@@ -10,7 +10,8 @@
 (defmethod read-file (path (type (eql :table)) &key table)
   (let ((file (first path)))
     (cond ((string= file "identifier") (read-file nil :identifier :table table))
-          ((string= file "data") (read-file (rest path) :data :table table)))))
+          ((string= file "data") (read-file (rest path) :data :table table))
+          ((string= file "structure") (read-file (rest path) :structure :table table)))))
 
 (defmethod read-file (path (type (eql :identifier)) &key table)
   (format nil "~A~%" (table-primary-key table)))
@@ -24,3 +25,10 @@
                                   (string-downcase (car field))
                                   (cdr field)))
                       row)))))
+
+(defmethod read-file (path (type (eql :structure)) &key table)
+  (let ((file (first path)))
+    (cond ((string= file "fields") (read-file nil :fields :table table)))))
+
+(defmethod read-file (path (type (eql :fields)) &key table)
+  (format nil "~{~A~%~}" (table-fields table)))

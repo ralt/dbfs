@@ -1,5 +1,17 @@
 (in-package :dbfs)
 
+(defn tables (string -> list) (username)
+  (multiple-value-bind (results _)
+      (with-db
+        (postmodern:query "
+SELECT tablename
+FROM pg_catalog.pg_tables
+WHERE schemaname = 'public'
+AND tableowner = $1
+" username :column))
+    (declare (ignore _))
+    results))
+
 (defn table-exists (string -> boolean) (table)
   (multiple-value-bind (_ count)
       (with-db
@@ -44,7 +56,21 @@ FROM   ~A
       (with-db
         (postmodern:query (format nil "
 SELECT *
-FROM ~A
+FROM  ~A
 WHERE ~A = $1" table key-field) key :alist))
     (declare (ignore _))
     rows))
+
+(defn table-fields (string -> list) (table)
+  (multiple-value-bind (rows _)
+      (with-db
+        (postmodern:query "
+SELECT attrelid::regclass, attnum, attname
+FROM   pg_attribute
+WHERE  attrelid = $1::regclass
+AND    attnum > 0
+AND    NOT attisdropped
+ORDER  BY attnum
+" table))
+    (declare (ignore _))
+    (mapcar #'caddr rows)))

@@ -5,17 +5,7 @@
 
 (defmethod dir-content (path (type (eql :root)) &key)
   (unless path
-    (return-from dir-content
-      (multiple-value-bind (results _)
-          (with-db
-            (postmodern:query "
-SELECT tablename
-FROM pg_catalog.pg_tables
-WHERE schemaname = 'public'
-AND tableowner = $1
-" (second *connection-spec*) :column))
-        (declare (ignore _))
-        results)))
+    (return-from dir-content (tables (second *connection-spec*))))
   (when (table-exists (first path))
     (dir-content (rest path) :table :table (first path))))
 
@@ -24,9 +14,17 @@ AND tableowner = $1
     (return-from dir-content '("structure" "identifier" "data")))
   (cond ((string= (first path) "data") (dir-content (rest path)
                                                     :data
-                                                    :table table))))
+                                                    :table table))
+        ((string= (first path) "structure") (dir-content (rest path)
+                                                         :structure
+                                                         :table table))))
 
 (defmethod dir-content (path (type (eql :data)) &key table)
   (unless path
     (return-from dir-content
       (table-keys table (table-primary-key table)))))
+
+(defmethod dir-content (path (type (eql :structure)) &key table)
+  (declare (ignore table))
+  (unless path
+    (return-from dir-content '("fields"))))
