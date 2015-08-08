@@ -21,6 +21,7 @@
                 :components
                 ((:file "package")
                  (:file "db")
+                 (:file "table")
                  (:file "dir-content")
                  (:file "is-directory")
                  (:file "read-file")

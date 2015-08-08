@@ -86,8 +86,8 @@
 
 (defun help ()
   (format t "Usage: dbfs <folder> <database type> [other arguments]~%")
-  (format t "~%Example: dbfs /mysql/ mysql localhost dbname username password~%")
-  (format t "~%Supported databases: mysql~%")
+  (format t "~%Example: dbfs /db/ postgresql localhost dbname username password~%")
+  (format t "~%Supported databases: postgresql~%")
   0)
 
 (defun main (args)
