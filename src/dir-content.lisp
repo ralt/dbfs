@@ -22,3 +22,11 @@ AND tableowner = $1
 (defmethod dir-content (path (type (eql :table)) &key table)
   (unless path
     (return-from dir-content '("structure" "identifier" "data")))
+  (cond ((string= (first path) "data") (dir-content (rest path)
+                                                    :data
+                                                    :table table))))
+
+(defmethod dir-content (path (type (eql :data)) &key table)
+  (unless path
+    (return-from dir-content
+      (table-keys table (table-primary-key table)))))
