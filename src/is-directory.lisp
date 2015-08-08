@@ -5,5 +5,5 @@
 
 (defmethod is-directory (path (type (eql :root)) &key)
   (cond ((= (length path) 3) nil)
-        ((and (= (length path) 2) (string= (cadr path) "id")) nil)
+        ((and (= (length path) 2) (string= (cadr path) "identifier")) nil)
         (t t)))
